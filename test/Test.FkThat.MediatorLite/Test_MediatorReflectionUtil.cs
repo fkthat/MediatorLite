@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using FakeItEasy;
 using FluentAssertions;
 using Xunit;
 
@@ -12,6 +13,17 @@ namespace FkThat.MediatorLite
         {
             var r = MediatorReflectionUtil.GetHandlerMessageTypes(typeof(Handler));
             r.Should().BeEquivalentTo(typeof(Message1), typeof(Message2), typeof(Message3));
+        }
+
+        [Fact]
+        public async Task BuildDispatch_ShouldReturnDispatchExpression()
+        {
+            var msg = new Message1();
+            var h = A.Fake<IMessageHandler<Message1>>();
+            A.CallTo(() => h.HandleMessageAsync(msg)).Returns(Task.CompletedTask);
+            var func = MediatorReflectionUtil.BuildDispatch(typeof(Message1)).Compile();
+            await func(h, msg);
+            A.CallTo(() => h.HandleMessageAsync(msg)).MustHaveHappened();
         }
 
         public class Message1 { }
