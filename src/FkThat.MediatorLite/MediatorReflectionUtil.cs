@@ -29,7 +29,6 @@ namespace FkThat.MediatorLite
         /// Builds the dispatch expression for the given message type.
         /// </summary>
         /// <param name="messageType">Type of the message.</param>
-        /// <exception cref="NotImplementedException"></exception>
         public static Expression<Func<object, object, Task>> BuildDispatch(Type messageType)
         {
             // (h, m) => ((IMessageHandler<TMsg>)h).HandleMessageAsync((TMsg)m);
