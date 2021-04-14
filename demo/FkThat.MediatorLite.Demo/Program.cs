@@ -118,6 +118,7 @@ namespace FkThat.MediatorLite.Demo
         }
     }
 
+    // Define messages
     public record CreateOrder(int Id);
     public record CompleteOrder(int Id);
     public record CancelOrder(int Id);
