@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet('start-feature', 'finish-feature')]
+    [ValidateSet('start-feature', 'finish-feature', 'tag-master')]
     $Command,
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]
@@ -24,6 +24,14 @@ try {
             git pull && `
             git remote prune origin && `
             git branch -d feature/$name
+        }
+        'tag-master' {
+            $tag = $Args[0]
+            git checkout master && `
+            git pull && `
+            git tag $tag && `
+            git push --tags && `
+            git checkout develop
         }
     }
 }
