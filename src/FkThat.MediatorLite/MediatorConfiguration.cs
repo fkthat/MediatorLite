@@ -13,6 +13,16 @@ namespace FkThat.MediatorLite
     {
         private readonly HashSet<(Type, Type)> _messageHandlers = new();
         private readonly Dictionary<Type, Func<object, object, Task>> _messageDispatchers = new();
+        private readonly IMessageDiscovery _messageDiscovery;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MediatorConfiguration"/> class.
+        /// </summary>
+        /// <param name="messageDiscovery">The message discovery.</param>
+        public MediatorConfiguration(IMessageDiscovery messageDiscovery)
+        {
+            _messageDiscovery = messageDiscovery;
+        }
 
         /// <summary>
         /// Maps message types to handler types.
@@ -31,7 +41,7 @@ namespace FkThat.MediatorLite
         /// <param name="handlerType">The message handler type.</param>
         public IMediatorConfigurationBuilder AddHandler(Type handlerType)
         {
-            foreach (var msgType in GetHandlerMessageTypes(handlerType))
+            foreach (var msgType in _messageDiscovery.GetHandlerMessageTypes(handlerType))
             {
                 _messageHandlers.Add((msgType, handlerType));
 
@@ -43,16 +53,6 @@ namespace FkThat.MediatorLite
 
             return this;
         }
-
-        private static IEnumerable<Type> GetHandlerMessageTypes(Type handlerType) =>
-            handlerType.GetInterfaces()
-                .Where(itf => itf.IsGenericType)
-                .Select(itf => new {
-                    InterfaceType = itf,
-                    GenericTypeDefinition = itf.GetGenericTypeDefinition()
-                })
-                .Where(itf => itf.GenericTypeDefinition == typeof(IMessageHandler<>))
-                .SelectMany(itf => itf.InterfaceType.GetGenericArguments());
 
         private static Expression<Func<object, object, Task>> BuildDispatch(Type messageType)
         {

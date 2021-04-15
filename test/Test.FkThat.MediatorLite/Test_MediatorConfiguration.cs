@@ -11,27 +11,47 @@ namespace FkThat.MediatorLite
         [Fact]
         public void AddHandler_ShouldAddMessageHandlers()
         {
-            MediatorConfiguration sut = new();
+            var messageDiscovery = A.Fake<IMessageDiscovery>();
+
+            var handler1 = A.Fake<object>(options => options
+                .Implements<IMessageHandler<Message0>>()
+                .Implements<IMessageHandler<Message1>>()
+                .Implements<IMessageHandler<Message2>>());
+
+            var handler2 = A.Fake<object>(options => options
+                .Implements<IMessageHandler<Message0>>()
+                .Implements<IMessageHandler<Message3>>()
+                .Implements<IMessageHandler<Message4>>());
+
+            A.CallTo(() => messageDiscovery.GetHandlerMessageTypes(handler1.GetType()))
+                .Returns(new[] { typeof(Message0), typeof(Message1), typeof(Message2) });
+
+            A.CallTo(() => messageDiscovery.GetHandlerMessageTypes(handler2.GetType()))
+                .Returns(new[] { typeof(Message0), typeof(Message3), typeof(Message4) });
+
+            MediatorConfiguration sut = new(messageDiscovery);
 
             var r = sut
-                .AddHandler(typeof(Handler1))
-                .AddHandler(typeof(Handler2));
+                .AddHandler(handler1.GetType())
+                .AddHandler(handler2.GetType());
 
             r.Should().Be(sut);
 
             sut.MessageHandlers.Should().BeEquivalentTo(
-                (typeof(Message0), typeof(Handler1)),
-                (typeof(Message1), typeof(Handler1)),
-                (typeof(Message2), typeof(Handler1)),
-                (typeof(Message0), typeof(Handler2)),
-                (typeof(Message3), typeof(Handler2)),
-                (typeof(Message4), typeof(Handler2)));
+                (typeof(Message0), handler1.GetType()),
+                (typeof(Message1), handler1.GetType()),
+                (typeof(Message2), handler1.GetType()),
+                (typeof(Message0), handler2.GetType()),
+                (typeof(Message3), handler2.GetType()),
+                (typeof(Message4), handler2.GetType()));
         }
 
         [Fact]
         public async Task AddHandler_ShouldAddMessageDispatchers()
         {
-            MediatorConfiguration sut = new();
+            var messageDiscovery = A.Fake<IMessageDiscovery>();
+
+            MediatorConfiguration sut = new(messageDiscovery);
 
             var r = sut
                 .AddHandler(typeof(Handler1))
