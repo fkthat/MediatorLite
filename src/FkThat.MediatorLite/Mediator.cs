@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,14 +10,14 @@ namespace FkThat.MediatorLite
     public class Mediator : IMediator
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly MediatorConfiguration _configuration;
+        private readonly IMediatorConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mediator"/> class.
         /// </summary>
         /// <param name="serviceProvider">The <c cref="IServiceProvider"/>.</param>
         /// <param name="configuration">The configuration.</param>
-        public Mediator(IServiceProvider serviceProvider, MediatorConfiguration configuration)
+        public Mediator(IServiceProvider serviceProvider, IMediatorConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
             _configuration = configuration;

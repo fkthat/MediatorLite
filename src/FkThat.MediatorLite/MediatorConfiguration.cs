@@ -9,7 +9,7 @@ namespace FkThat.MediatorLite
     /// <summary>
     /// <c cref="Mediator"/> configuration.
     /// </summary>
-    public class MediatorConfiguration : IMediatorConfiguration
+    public class MediatorConfiguration : IMediatorConfiguration, IMediatorConfigurationBuilder
     {
         private readonly HashSet<(Type, Type)> _messageHandlers = new();
         private readonly Dictionary<Type, Func<object, object, Task>> _messageDispatchers = new();
@@ -29,7 +29,7 @@ namespace FkThat.MediatorLite
         /// Adds the message handler.
         /// </summary>
         /// <param name="handlerType">The message handler type.</param>
-        public IMediatorConfiguration AddHandler(Type handlerType)
+        public IMediatorConfigurationBuilder AddHandler(Type handlerType)
         {
             foreach (var msgType in GetHandlerMessageTypes(handlerType))
             {

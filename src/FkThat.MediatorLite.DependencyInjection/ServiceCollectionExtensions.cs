@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configurationBuilder">Configures the <c cref="Mediator"/>.</param>
         public static IServiceCollection AddMediator(
             this IServiceCollection services,
-            Action<IMediatorConfiguration> configurationBuilder)
+            Action<IMediatorConfigurationBuilder> configurationBuilder)
         {
             MediatorConfiguration configuration = new();
             configurationBuilder(configuration);
