@@ -19,10 +19,7 @@ namespace Test.Integration
             services.AddTransient<Handler1>();
             services.AddTransient<Handler2>();
 
-            services.AddMediator(configure => {
-                configure.AddHandler<Handler1>();
-                configure.AddHandler<Handler2>();
-            });
+            services.AddMediator();
 
             using var serviceProvider = services.BuildServiceProvider();
             var mediator = serviceProvider.GetRequiredService<IMediator>();
@@ -57,10 +54,7 @@ namespace Test.Integration
             services.AddTransient<Handler1>();
             services.AddTransient<Handler2>();
 
-            services.AddMediator(configure => {
-                configure.AddHandler<Handler1>();
-                configure.AddHandler<Handler2>();
-            });
+            services.AddMediator();
 
             using var serviceProvider = services.BuildServiceProvider();
             using var scope = serviceProvider.CreateScope();
