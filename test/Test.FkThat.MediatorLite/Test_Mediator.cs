@@ -13,28 +13,22 @@ namespace FkThat.MediatorLite
             var h1 = A.Fake<IMessageHandler<Message1>>();
             var h2 = A.Fake<IMessageHandler<Message2>>();
             var serviceProvider = A.Fake<IServiceProvider>();
-            A.CallTo(() => serviceProvider.GetService(typeof(Handler1))).Returns(h1);
-            A.CallTo(() => serviceProvider.GetService(typeof(Handler2))).Returns(h2);
-
-            Mediator sut = new(
-                serviceProvider,
-                (typeof(Message1), typeof(Handler1)),
-                (typeof(Message2), typeof(Handler2)));
-
+            A.CallTo(() => serviceProvider.GetService(h1.GetType())).Returns(h1);
+            A.CallTo(() => serviceProvider.GetService(h2.GetType())).Returns(h2);
+            MediatorConfiguration configuration = new();
+            configuration.AddHandler(h1.GetType());
+            configuration.AddHandler(h2.GetType());
+            Mediator sut = new(serviceProvider, configuration);
             Message1 msg1 = new();
             Message2 msg2 = new();
             await sut.SendMessageAsync(msg1);
             await sut.SendMessageAsync(msg2);
-            A.CallTo(() => h1.HandleMessageAsync((object)msg1)).MustHaveHappened();
-            A.CallTo(() => h2.HandleMessageAsync((object)msg2)).MustHaveHappened();
+            A.CallTo(() => h1.HandleMessageAsync(msg1)).MustHaveHappened();
+            A.CallTo(() => h2.HandleMessageAsync(msg2)).MustHaveHappened();
         }
 
         public class Message1 { }
 
         public class Message2 { }
-
-        public class Handler1 { }
-
-        public class Handler2 { }
     }
 }

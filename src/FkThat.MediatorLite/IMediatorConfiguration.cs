@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace FkThat.MediatorLite
 {
     /// <summary>
-    /// <c cref="Mediator"/> configuration API.
+    /// Mediator configuration API.
     /// </summary>
     public interface IMediatorConfiguration
     {
@@ -19,7 +21,7 @@ namespace FkThat.MediatorLite
         /// Adds the message handler.
         /// </summary>
         /// <typeparam name="T">The message handler type.</typeparam>
-        IMediatorConfiguration AddHandler<T>() where T : IMessageHandler =>
+        IMediatorConfiguration AddHandler<T>() =>
             AddHandler(typeof(T));
 
         /// <summary>

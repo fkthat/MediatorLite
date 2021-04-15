@@ -15,7 +15,6 @@ namespace FkThat.MediatorLite.Demo
 
     // Define order message handlers
     public class OrderHandler :
-        MessageHandler<OrderHandler>,
         IMessageHandler<CreateOrder>,
         IMessageHandler<CompleteOrder>,
         IMessageHandler<CancelOrder>
@@ -49,9 +48,7 @@ namespace FkThat.MediatorLite.Demo
     }
 
     // Define notification message handler
-    public class NotificationHandler :
-        MessageHandler<NotificationHandler>,
-        IMessageHandler<Notify>
+    public class NotificationHandler : IMessageHandler<Notify>
     {
         public Task HandleMessageAsync(Notify message)
         {
@@ -62,7 +59,7 @@ namespace FkThat.MediatorLite.Demo
 
     public class OrderStore
     {
-        private HashSet<Order> _orders = new();
+        private readonly HashSet<Order> _orders = new();
 
         public IReadOnlyCollection<Order> Orders => _orders;
 

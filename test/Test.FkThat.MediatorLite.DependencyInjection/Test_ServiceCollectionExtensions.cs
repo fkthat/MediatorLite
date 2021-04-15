@@ -61,11 +61,11 @@ namespace FkThat.MediatorLite.DependencyInjection
                 return Task.CompletedTask;
             }
 
-            public Task HandleMessageAsync(Message0 message) => throw new NotImplementedException();
+            public Task HandleMessageAsync(Message0 message) => HandleMessageAsync((object)message);
 
-            public Task HandleMessageAsync(Message1 message) => throw new NotImplementedException();
+            public Task HandleMessageAsync(Message1 message) => HandleMessageAsync((object)message);
 
-            public Task HandleMessageAsync(Message2 message) => throw new NotImplementedException();
+            public Task HandleMessageAsync(Message2 message) => HandleMessageAsync((object)message);
         }
 
         private class Handler2 : IMessageHandler<Message0>, IMessageHandler<Message3>, IMessageHandler<Message4>
@@ -83,11 +83,11 @@ namespace FkThat.MediatorLite.DependencyInjection
                 return Task.CompletedTask;
             }
 
-            public Task HandleMessageAsync(Message0 message) => throw new NotImplementedException();
+            public Task HandleMessageAsync(Message0 message) => HandleMessageAsync((object)message);
 
-            public Task HandleMessageAsync(Message3 message) => throw new NotImplementedException();
+            public Task HandleMessageAsync(Message3 message) => HandleMessageAsync((object)message);
 
-            public Task HandleMessageAsync(Message4 message) => throw new NotImplementedException();
+            public Task HandleMessageAsync(Message4 message) => HandleMessageAsync((object)message);
         }
     }
 }
