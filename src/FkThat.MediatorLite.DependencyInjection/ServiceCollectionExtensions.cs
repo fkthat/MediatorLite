@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using FkThat.MediatorLite;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -24,6 +25,30 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IMediatorConfiguration>(configuration);
             services.AddTransient<IMediator, Mediator>();
             return services;
+        }
+
+        /// <summary>
+        /// Adds the mediator to the <c cref="IServiceCollection"/>. This method should be called
+        /// only after all handlers registration.
+        /// </summary>
+        /// <param name="services">The <c cref="IServiceCollection"/>.</param>
+        public static IServiceCollection AddMediator(this IServiceCollection services)
+        {
+            // is a message handler interface
+            bool isHandlerInterface(Type t) =>
+                t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IMessageHandler<>);
+
+            // is a message handler class
+            bool isHandlerType(Type t) => t.GetInterfaces().Any(isHandlerInterface);
+
+            // filter registered types
+            var handlers = services.Select(sd => sd.ServiceType).Where(isHandlerType);
+
+            // configuration function
+            void configure(IMediatorConfigurationBuilder config) =>
+                handlers.Aggregate(config, (c, h) => c.AddHandler(h));
+
+            return services.AddMediator(configure);
         }
     }
 }
