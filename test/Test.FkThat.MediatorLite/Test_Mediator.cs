@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
+using FluentAssertions;
 using Xunit;
 
 namespace FkThat.MediatorLite
@@ -43,6 +44,20 @@ namespace FkThat.MediatorLite
             // verify messages dispatched
             A.CallTo(() => h1.HandleMessageAsync(msg1)).MustHaveHappened();
             A.CallTo(() => h2.HandleMessageAsync(msg2)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void SendMessageAsync_ShouldIgnoreUnknownMessage()
+        {
+            var serviceProvider = A.Fake<IServiceProvider>();
+            var configuration = A.Fake<IMediatorConfiguration>();
+
+            A.CallTo(() => configuration.MessageDispatchers)
+                .Returns(new Dictionary<Type, Func<object, object, Task>>());
+
+            Mediator sut = new(serviceProvider, configuration);
+            var r = sut.SendMessageAsync("hello");
+            r.Should().Be(Task.CompletedTask);
         }
 
         public class Message1 { }
