@@ -36,17 +36,17 @@ namespace FkThat.MediatorLite.DependencyInjection
                 (h1, m0), (h1, m1), (h1, m2), (h2, m0), (h2, m3), (h2, m4));
         }
 
-        public class Message0 { }
+        private class Message0 { }
 
-        public class Message1 { }
+        private class Message1 { }
 
-        public class Message2 { }
+        private class Message2 { }
 
-        public class Message3 { }
+        private class Message3 { }
 
-        public class Message4 { }
+        private class Message4 { }
 
-        public class Handler1 : IMessageHandler<Message0>, IMessageHandler<Message1>, IMessageHandler<Message2>
+        private class Handler1 : IMessageHandler<Message0>, IMessageHandler<Message1>, IMessageHandler<Message2>
         {
             private readonly Action<object, object> _callback;
 
@@ -68,7 +68,7 @@ namespace FkThat.MediatorLite.DependencyInjection
             public Task HandleMessageAsync(Message2 message) => throw new NotImplementedException();
         }
 
-        public class Handler2 : IMessageHandler<Message0>, IMessageHandler<Message3>, IMessageHandler<Message4>
+        private class Handler2 : IMessageHandler<Message0>, IMessageHandler<Message3>, IMessageHandler<Message4>
         {
             private readonly Action<object, object> _callback;
 
