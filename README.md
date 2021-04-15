@@ -77,9 +77,7 @@ services.AddTransient<NotificationHandler>();
 ### Register mediator
 
 ```csharp
-services.AddMediator(config => config
-    .AddHandler<OrderHandler>()
-    .AddHandler<NotificationHandler>());
+services.AddMediator();
 ```
 
 ### Use mediator
