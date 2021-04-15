@@ -48,6 +48,45 @@ namespace Test.Integration
                 (typeof(Handler2), msg4));
         }
 
+        [Fact]
+        public async Task Run_Scoped()
+        {
+            ServiceCollection services = new();
+            MessageLog log = new();
+            services.AddSingleton(log);
+            services.AddTransient<Handler1>();
+            services.AddTransient<Handler2>();
+
+            services.AddMediator(configure => {
+                configure.AddHandler<Handler1>();
+                configure.AddHandler<Handler2>();
+            });
+
+            using var serviceProvider = services.BuildServiceProvider();
+            using var scope = serviceProvider.CreateScope();
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+            Message0 msg0 = new();
+            Message1 msg1 = new();
+            Message2 msg2 = new();
+            Message3 msg3 = new();
+            Message3 msg4 = new();
+
+            await mediator.SendMessageAsync(msg0);
+            await mediator.SendMessageAsync(msg1);
+            await mediator.SendMessageAsync(msg2);
+            await mediator.SendMessageAsync(msg3);
+            await mediator.SendMessageAsync(msg4);
+
+            log.Messages.Should().Equal(
+                (typeof(Handler1), msg0),
+                (typeof(Handler2), msg0),
+                (typeof(Handler1), msg1),
+                (typeof(Handler1), msg2),
+                (typeof(Handler2), msg3),
+                (typeof(Handler2), msg4));
+        }
+
         public class Message0 { }
 
         public class Message1 { }
