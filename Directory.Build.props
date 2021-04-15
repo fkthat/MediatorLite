@@ -1,7 +1,7 @@
 <Project>
   <!-- Version -->
   <PropertyGroup>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionPrefix>1.1.0</VersionPrefix>
   </PropertyGroup>
   <!-- package properties -->
   <PropertyGroup>
@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://github.com/fkthat/MediatorLite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fkthat/MediatorLite</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>fkthat</PackageTags>
+    <PackageTags>fkthat,mediator</PackageTags>
     <Description>MediatorLite</Description>
     <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
    </PropertyGroup>
