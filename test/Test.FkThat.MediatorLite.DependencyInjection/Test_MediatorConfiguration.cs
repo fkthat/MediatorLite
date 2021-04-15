@@ -19,7 +19,11 @@ namespace FkThat.MediatorLite.DependencyInjection
         public void AddHandler_ShouldAddHandlerType()
         {
             MediatorConfiguration sut = new();
-            var r = sut.AddHandler(typeof(Handler1)).AddHandler<Handler2>();
+
+            var r = sut
+                .AddHandler(typeof(Handler1))
+                .AddHandler(typeof(Handler2));
+
             r.Should().Be(sut);
             sut.MessageHandlers.Should().BeEquivalentTo(typeof(Handler1), typeof(Handler2));
         }
