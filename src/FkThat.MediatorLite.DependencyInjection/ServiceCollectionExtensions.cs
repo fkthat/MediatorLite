@@ -17,7 +17,9 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Action<IMediatorConfigurationBuilder> configurationBuilder)
         {
-            MediatorConfiguration configuration = new(new MessageDiscovery());
+            MediatorConfiguration configuration = new(
+                new MessageDiscovery(), new MessageCompiler());
+
             configurationBuilder(configuration);
             services.AddTransient<IMediator>(sp => new Mediator(sp, configuration));
             return services;
