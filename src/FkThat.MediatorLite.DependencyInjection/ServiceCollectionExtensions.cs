@@ -17,11 +17,12 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Action<IMediatorConfigurationBuilder> configurationBuilder)
         {
-            MediatorConfiguration configuration = new(
-                new MessageDiscovery(), new MessageCompiler());
-
+            MessageDiscovery discovery = new();
+            MessageCompiler compiler = new();
+            MediatorConfiguration configuration = new(discovery, compiler);
             configurationBuilder(configuration);
-            services.AddTransient<IMediator>(sp => new Mediator(sp, configuration));
+            services.AddSingleton<IMediatorConfiguration>(configuration);
+            services.AddTransient<IMediator, Mediator>();
             return services;
         }
     }
