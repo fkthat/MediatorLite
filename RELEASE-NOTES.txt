@@ -1,3 +1,6 @@
+2.1.0
+- Simple Mediator registration.
+
 2.0.0
 - Untyped IMessageHandler interface removed.
 - MessageHandler class removed.
