@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,37 +10,28 @@ namespace FkThat.MediatorLite
     public class Mediator : IMediator
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly HashSet<(Type, Type)> _handlers;
+        private readonly IMediatorConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mediator"/> class.
         /// </summary>
-        /// <param name="serviceProvider">The <span class="code"></span> to resolve handlers.</param>
-        /// <param name="handlers">Maps message types to handler types.</param>
-        public Mediator(IServiceProvider serviceProvider, IEnumerable<(Type, Type)> handlers)
+        /// <param name="serviceProvider">The <c cref="IServiceProvider"/>.</param>
+        /// <param name="configuration">The configuration.</param>
+        public Mediator(IServiceProvider serviceProvider, IMediatorConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
-            _handlers = new(handlers);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Mediator"/> class.
-        /// </summary>
-        /// <param name="serviceProvider">The service provider.</param>
-        /// <param name="handlers">Maps message types to handler types.</param>
-        public Mediator(IServiceProvider serviceProvider, params (Type, Type)[] handlers)
-            : this(serviceProvider, (IEnumerable<(Type, Type)>)handlers)
-        {
+            _configuration = configuration;
         }
 
         /// <summary>
         /// Sends the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        public Task SendMessageAsync(object message) => Task.WhenAll(
-            _handlers.Where(h => h.Item1 == message.GetType())
-                .Select(h => _serviceProvider.GetService(h.Item2))
-                .Where(h => h != null).Cast<IMessageHandler>()
-                .Select(h => h.HandleMessageAsync(message)));
+        public Task SendMessageAsync(object message) =>
+            _configuration.MessageDispatchers.TryGetValue(message.GetType(), out var dispatch)
+                ? Task.WhenAll(_configuration.MessageHandlers
+                    .Where(h => h.Item1 == message.GetType())
+                    .Select(h => dispatch!(_serviceProvider.GetService(h.Item2), message)))
+                : Task.CompletedTask;
     }
 }

@@ -1,6 +1,7 @@
 2.0.0
-- Breaking changes in API.
-- Support to netstandard 2.1 only.
+- Untyped IMessageHandler interface removed.
+- MessageHandler class removed.
+- No support to netstandard < 2.1 anymore.
 
 1.0.0 
 - Initial release.

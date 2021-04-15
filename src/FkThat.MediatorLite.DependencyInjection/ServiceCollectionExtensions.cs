@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using FkThat.MediatorLite;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -15,16 +14,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">The <c cref="IServiceCollection"/>.</param>
         /// <param name="configurationBuilder">Configures the <c cref="Mediator"/>.</param>
         public static IServiceCollection AddMediator(
-            this IServiceCollection services, Action<IMediatorConfiguration> configurationBuilder)
+            this IServiceCollection services,
+            Action<IMediatorConfigurationBuilder> configurationBuilder)
         {
-            MediatorConfiguration configuration = new();
+            MessageDiscovery discovery = new();
+            MessageCompiler compiler = new();
+            MediatorConfiguration configuration = new(discovery, compiler);
             configurationBuilder(configuration);
-
-            var handlers = configuration.MessageHandlers.SelectMany(h =>
-                MediatorReflectionUtil.GetHandlerMessageTypes(h).Select(m => (m, h)))
-                .ToArray();
-
-            services.AddTransient<IMediator>(sp => new Mediator(sp, handlers));
+            services.AddSingleton<IMediatorConfiguration>(configuration);
+            services.AddTransient<IMediator, Mediator>();
             return services;
         }
     }

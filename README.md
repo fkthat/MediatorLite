@@ -25,7 +25,6 @@ public record Notify(string Message);
 
 ```csharp
 public class OrderHandler :
-    MessageHandler<OrderHandler>,
     IMessageHandler<CreateOrder>,
     IMessageHandler<CompleteOrder>,
     IMessageHandler<CancelOrder>
@@ -58,9 +57,7 @@ public class OrderHandler :
     }
 }
 
-public class NotificationHandler :
-    MessageHandler<NotificationHandler>,
-    IMessageHandler<Notify>
+public class NotificationHandler : IMessageHandler<Notify>
 {
     public Task HandleMessageAsync(Notify message)
     {

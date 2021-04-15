@@ -1,25 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace FkThat.MediatorLite
 {
     /// <summary>
-    /// <c cref="Mediator"/> configuration API.
+    /// Mediator configuration API.
     /// </summary>
-    public interface IMediatorConfiguration
+    public interface IMediatorConfigurationBuilder
     {
         /// <summary>
         /// Adds the message handler.
         /// </summary>
         /// <param name="type">The message handler type.</param>
-        IMediatorConfiguration AddHandler(Type type);
+        IMediatorConfigurationBuilder AddHandler(Type type);
 
         /// <summary>
         /// Adds the message handler.
         /// </summary>
         /// <typeparam name="T">The message handler type.</typeparam>
-        IMediatorConfiguration AddHandler<T>() where T : IMessageHandler =>
+        IMediatorConfigurationBuilder AddHandler<T>() =>
             AddHandler(typeof(T));
 
         /// <summary>
@@ -27,7 +29,7 @@ namespace FkThat.MediatorLite
         /// </summary>
         /// <param name="assembly">The assembly. Default is the calling assembly.</param>
         /// <param name="filter">The handler class filter. Default is no filtering.</param>
-        IMediatorConfiguration AddHandlersFromAssembly(
+        IMediatorConfigurationBuilder AddHandlersFromAssembly(
             Assembly? assembly = null, Func<Type, bool>? filter = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
