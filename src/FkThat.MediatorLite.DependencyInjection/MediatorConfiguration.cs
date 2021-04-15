@@ -33,12 +33,5 @@ namespace FkThat.MediatorLite
             _handlers.Add(type);
             return this;
         }
-
-        /// <summary>
-        /// Adds the message handler.
-        /// </summary>
-        /// <typeparam name="T">The message handler type.</typeparam>
-        public IMediatorConfiguration AddHandler<T>() where T : IMessageHandler =>
-            AddHandler(typeof(T));
     }
 }
