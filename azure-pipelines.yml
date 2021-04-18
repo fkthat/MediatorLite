@@ -1,98 +1,123 @@
+#
 # Azure Pipelines CI
+#
 
 trigger:
-- develop
-- master
-pr:
-- develop
-- master
+  branches:
+    include:
+      - develop
+      - master
 
+# Default values
 variables:
-  BuildConfiguration: Release
-  VersionSuffix: ''
+  # debug build
+  BuildConfiguration: Debug
+  # add -CI-* to the version
+  VersionSuffix: CI-$(Build.BuildNumber)
+  # do not build NuGet package
+  NuGet: false
 
 pool:
   vmImage: ubuntu-20.04
 
 steps:
 
-- task: UseDotNet@2
-  displayName: Use SDK
-  inputs:
-    packageType: 'sdk'
-    useGlobalJson: true
+  # Build NuGet only for develop and master branch commits
+  # the -CI-* version for the develop branch and release one for master
 
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: 'restore'
-    arguments: -c $(BuildConfiguration)
+  - task: Bash@3
+    displayName: Setup build configuration
+    inputs:
+      targetType: inline
+      script: |
+        if [[ "$(Build.SourceBranchName)" == "develop" ]]; then
+          echo "##vso[task.setvariable variable=NuGet]true"
+        fi
+        if [[ "$(Build.SourceBranchName)" == "master" ]]; then
+          echo "##vso[task.setvariable variable=NuGet]true"
+          echo "##vso[task.setvariable variable=BuildConfiguration]Release"
+          echo "##vso[task.setvariable variable=VersionSuffix]"
+        fi
 
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    command: 'build'
-    arguments: -c $(BuildConfiguration) --no-restore
+  - task: Bash@3
+    displayName: Show build configuration
+    inputs:
+      targetType: inline
+      script: |
+        echo BuildConfiguration: $(BuildConfiguration)
+        echo VersionSuffix: $(VersionSuffix)
+        echo NuGet: $(NuGet)
 
-- task: DotNetCoreCLI@2
-  displayName: Test
-  inputs:
-    command: 'test'
-    publishTestResults: true
-    arguments: -c $(BuildConfiguration) --no-build
+  # The typical restore/build/test pipeline
 
-- task: DotNetCoreCLI@2
-  displayName: Restore tools
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: restore
+  - task: UseDotNet@2
+    displayName: Use SDK
+    inputs:
+      packageType: 'sdk'
+      useGlobalJson: true
 
-- task: DotNetCoreCLI@2
-  displayName: Generate coverage report
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: >-
-      run reportgenerator -reports:test/**/coverage.cobertura.xml
-      -targetdir:Coverage -reporttypes:Cobertura
+  - task: DotNetCoreCLI@2
+    displayName: Restore NuGet packages
+    inputs:
+      command: 'restore'
+      arguments: -c $(BuildConfiguration)
 
-- task: PublishCodeCoverageResults@1
-  displayName: Publish coverage report
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: 'Coverage/Cobertura.xml'
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      command: 'build'
+      arguments: -c $(BuildConfiguration) --no-restore
 
-- task: Bash@3
-  displayName: Turn pack on
-  condition: eq(variables['Build.Reason'], 'IndividualCI')
-  inputs:
-    targetType: 'inline'
-    script: echo "##vso[task.setvariable variable=Pack]Yes"
+  - task: DotNetCoreCLI@2
+    displayName: Run tests
+    inputs:
+      command: 'test'
+      publishTestResults: true
+      arguments: -c $(BuildConfiguration) --no-build
 
-- task: Bash@3
-  displayName: Set version suffix
-  condition: and(eq(variables.Pack, 'Yes'), ne(variables['Build.SourceBranchName'], 'master'))
-  inputs:
-    targetType: 'inline'
-    script: echo "##vso[task.setvariable variable=VersionSuffix]CI-$(Build.BuildNumber)"
+  # Since Azure Pipelines isn't able to merge several coverage reports
+  # (from different projects) do it manually with the tool
 
-- task: DotNetCoreCLI@2
-  displayName: Pack
-  condition: eq(variables.Pack, 'Yes')
-  inputs:
-    command: 'custom'
-    projects: 'src/**/*.csproj'
-    custom: 'pack'
-    arguments: >-
-      -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)
-      -p:VersionSuffix=$(VersionSuffix) --no-build
+  - task: DotNetCoreCLI@2
+    displayName: Restore coverage reporting tool
+    inputs:
+      command: 'custom'
+      custom: 'tool'
+      arguments: restore
 
-- task: NuGetCommand@2
-  displayName: Push to MyGet
-  condition: eq(variables.Pack, 'Yes')
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'MyGet'
+  - task: DotNetCoreCLI@2
+    displayName: Generate coverage report
+    inputs:
+      command: 'custom'
+      custom: 'tool'
+      arguments: >-
+        run reportgenerator -reports:test/**/coverage.cobertura.xml
+        -targetdir:Coverage -reporttypes:Cobertura
+
+  - task: PublishCodeCoverageResults@1
+    displayName: Publish coverage report
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: 'Coverage/Cobertura.xml'
+
+  # Build and publish NuGet package only if NuGet == true
+
+  - task: DotNetCoreCLI@2
+    displayName: Create NuGet package
+    condition: and(succeeded(), eq(variables.NuGet, true))
+    inputs:
+      command: 'custom'
+      projects: 'src/**/*.csproj'
+      custom: 'pack'
+      arguments: >-
+        -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)
+        -p:VersionSuffix=$(VersionSuffix) --no-build
+
+  - task: NuGetCommand@2
+    displayName: Publish NuGet package
+    condition: and(succeeded(), eq(variables.NuGet, true))
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+      nuGetFeedType: 'external'
+      publishFeedCredentials: 'MyGet'
