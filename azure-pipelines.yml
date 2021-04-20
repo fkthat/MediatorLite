@@ -11,6 +11,9 @@ trigger:
     include:
       - src
       - test
+      - global.json
+      - Directory.Build.props
+      - RELEASE-NOTES.txt
 
 # Default values
 variables:
