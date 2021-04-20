@@ -6,11 +6,11 @@
 
 ## Packages
 
-[![MyGet (with prereleases)](https://img.shields.io/myget/fkthat/vpre/FkThat.MediatorLite?label=FkThat.MediatorLite)](https://www.myget.org/feed/fkthat/package/nuget/FkThat.MediatorLite)
-[![MyGet (with prereleases)](https://img.shields.io/myget/fkthat/vpre/FkThat.MediatorLite.Abstractions?label=FkThat.MediatorLite.Abstractions)](https://www.myget.org/feed/fkthat/package/nuget/FkThat.MediatorLite.Abstractions)
-[![MyGet (with prereleases)](https://img.shields.io/myget/fkthat/vpre/FkThat.MediatorLite.DependencyInjection?label=FkThat.MediatorLite.DependencyInjection)](https://www.myget.org/feed/fkthat/package/nuget/FkThat.MediatorLite.DependencyInjection)
+[![MyGet (with prereleases)](https://img.shields.io/myget/fkthat/v/FkThat.MediatorLite?label=FkThat.MediatorLite)](https://www.myget.org/feed/fkthat/package/nuget/FkThat.MediatorLite)
+[![MyGet (with prereleases)](https://img.shields.io/myget/fkthat/v/FkThat.MediatorLite.Abstractions?label=FkThat.MediatorLite.Abstractions)](https://www.myget.org/feed/fkthat/package/nuget/FkThat.MediatorLite.Abstractions)
+[![MyGet (with prereleases)](https://img.shields.io/myget/fkthat/v/FkThat.MediatorLite.DependencyInjection?label=FkThat.MediatorLite.DependencyInjection)](https://www.myget.org/feed/fkthat/package/nuget/FkThat.MediatorLite.DependencyInjection)
 
-## Sample usage
+## Demo
 
 ### Define messages
 

@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The <c cref="IServiceCollection"/>.</param>
         /// <param name="configurationBuilder">Configures the <c cref="Mediator"/>.</param>
+        [Obsolete("This method is obsolete and will be removed. Use parameterless overload.")]
         public static IServiceCollection AddMediator(
             this IServiceCollection services,
             Action<IMediatorConfigurationBuilder> configurationBuilder)
@@ -28,27 +29,31 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds the mediator to the <c cref="IServiceCollection"/>. This method should be called
-        /// only after all handlers registration.
+        /// Adds the mediator to the <c cref="IServiceCollection"/>.
         /// </summary>
         /// <param name="services">The <c cref="IServiceCollection"/>.</param>
-        public static IServiceCollection AddMediator(this IServiceCollection services)
+        /// <param name="lifetime">The lifetime of the <c cref="Mediator"/>.</param>
+        public static IServiceCollection AddMediator(
+            this IServiceCollection services, ServiceLifetime lifetime)
         {
-            // is a message handler interface
-            bool isHandlerInterface(Type t) =>
-                t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IMessageHandler<>);
+            services.AddSingleton(sp => (IMediatorConfiguration)services
+                .Select(sd => sd.ServiceType)
+                .Where(t => t.GetInterfaces().Any(i => i.IsGenericType &&
+                        i.GetGenericTypeDefinition() == typeof(IMessageHandler<>)))
+                .Aggregate(
+                    (IMediatorConfigurationBuilder)new MediatorConfiguration(
+                        new MessageDiscovery(), new MessageCompiler()),
+                    (c, h) => c.AddHandler(h)));
 
-            // is a message handler class
-            bool isHandlerType(Type t) => t.GetInterfaces().Any(isHandlerInterface);
-
-            // filter registered types
-            var handlers = services.Select(sd => sd.ServiceType).Where(isHandlerType);
-
-            // configuration function
-            void configure(IMediatorConfigurationBuilder config) =>
-                handlers.Aggregate(config, (c, h) => c.AddHandler(h));
-
-            return services.AddMediator(configure);
+            services.Add(ServiceDescriptor.Describe(typeof(IMediator), typeof(Mediator), lifetime));
+            return services;
         }
+
+        /// <summary>
+        /// Adds the mediator with the transient lifetime to the <c cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <c cref="IServiceCollection"/>.</param>
+        public static IServiceCollection AddMediator(this IServiceCollection services) =>
+            services.AddMediator(ServiceLifetime.Transient);
     }
 }

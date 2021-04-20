@@ -98,9 +98,7 @@ namespace FkThat.MediatorLite.Demo
             services.AddTransient<NotificationHandler>();
 
             // Register mediator
-            services.AddMediator(config => config
-                .AddHandler<OrderHandler>()
-                .AddHandler<NotificationHandler>());
+            services.AddMediator();
 
             using var serviceProvider = services.BuildServiceProvider();
 
