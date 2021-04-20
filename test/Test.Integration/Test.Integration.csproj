@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -22,7 +22,7 @@
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
-    <CollectCoverage>true</CollectCoverage>
+    <CollectCoverage>false</CollectCoverage>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>
     <Exclude>[*]*.Program,[*]*.Startup</Exclude>
     <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
