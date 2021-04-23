@@ -13,25 +13,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the mediator to the <c cref="IServiceCollection"/>.
         /// </summary>
         /// <param name="services">The <c cref="IServiceCollection"/>.</param>
-        /// <param name="configurationBuilder">Configures the <c cref="Mediator"/>.</param>
-        [Obsolete("This method is obsolete and will be removed. Use parameterless overload.")]
-        public static IServiceCollection AddMediator(
-            this IServiceCollection services,
-            Action<IMediatorConfigurationBuilder> configurationBuilder)
-        {
-            MessageDiscovery discovery = new();
-            MessageCompiler compiler = new();
-            MediatorConfiguration configuration = new(discovery, compiler);
-            configurationBuilder(configuration);
-            services.AddSingleton<IMediatorConfiguration>(configuration);
-            services.AddTransient<IMediator, Mediator>();
-            return services;
-        }
-
-        /// <summary>
-        /// Adds the mediator to the <c cref="IServiceCollection"/>.
-        /// </summary>
-        /// <param name="services">The <c cref="IServiceCollection"/>.</param>
         /// <param name="lifetime">The lifetime of the <c cref="Mediator"/>.</param>
         public static IServiceCollection AddMediator(
             this IServiceCollection services, ServiceLifetime lifetime)
