@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 namespace FkThat.MediatorLite
 {
     /// <summary>
-    /// Creates a dispatch function for a message.
+    /// Creates dispatch delegates.
     /// </summary>
-    public class MessageCompiler : IMessageCompiler
+    public class DispatchBuilder : IDispatchBuilder
     {
         /// <summary>
-        /// Gets the message dispatch function.
+        /// Builds the dispatch function.
         /// </summary>
         /// <param name="messageType">Type of the message.</param>
-        public Func<object, object, Task> GetMessageDispatchFunc(Type messageType)
+        public Func<object, object, Task> BuildDispatchFunc(Type messageType)
         {
             // (h, m) => ((IMessageHandler<TMsg>)h).HandleMessageAsync((TMsg)m);
             var handlerType = typeof(IMessageHandler<>).MakeGenericType(messageType);
