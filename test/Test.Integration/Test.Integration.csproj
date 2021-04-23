@@ -36,4 +36,8 @@
   <ItemGroup Condition="Exists('..\..\src\Integration\Integration.csproj')">
     <ProjectReference Include="..\..\src\Integration\Integration.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FkThat.MediatorLite.Abstractions\FkThat.MediatorLite.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\FkThat.MediatorLite.DependencyInjection\FkThat.MediatorLite.DependencyInjection.csproj" />
+  </ItemGroup>
 </Project>
