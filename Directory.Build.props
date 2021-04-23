@@ -12,8 +12,10 @@
     <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
     <FileVersion>$(VersionPrefix).0</FileVersion>
     <PackageProjectUrl>https://github.com/fkthat/MediatorLite</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fkthat/MediatorLite</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/fkthat/MediatorLite</RepositoryUrl>
+    <RepositoryBranch>$(RepositoryBranch)</RepositoryBranch>
+    <RepositoryCommit>$(RepositoryCommit)</RepositoryCommit>
     <PackageTags>fkthat,mediator</PackageTags>
     <Description>MediatorLite</Description>
     <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
