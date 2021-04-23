@@ -1,27 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31220.234
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{49D867CA-27B2-4349-8FE4-A20B7FF28818}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FkThat.MediatorLite", "src\FkThat.MediatorLite\FkThat.MediatorLite.csproj", "{2B83901A-4809-4271-9402-80EF5CFE2BA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FkThat.MediatorLite", "src\FkThat.MediatorLite\FkThat.MediatorLite.csproj", "{2B83901A-4809-4271-9402-80EF5CFE2BA5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5D580F26-4044-426E-AA8B-F124DF4D71B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.FkThat.MediatorLite", "test\Test.FkThat.MediatorLite\Test.FkThat.MediatorLite.csproj", "{466E5F9A-2087-4DEA-AD4C-BA7E9ABFA88C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.FkThat.MediatorLite", "test\Test.FkThat.MediatorLite\Test.FkThat.MediatorLite.csproj", "{466E5F9A-2087-4DEA-AD4C-BA7E9ABFA88C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FkThat.MediatorLite.Abstractions", "src\FkThat.MediatorLite.Abstractions\FkThat.MediatorLite.Abstractions.csproj", "{33B29E60-D8A2-4F65-AD62-519D64B47088}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FkThat.MediatorLite.Abstractions", "src\FkThat.MediatorLite.Abstractions\FkThat.MediatorLite.Abstractions.csproj", "{33B29E60-D8A2-4F65-AD62-519D64B47088}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FkThat.MediatorLite.DependencyInjection", "src\FkThat.MediatorLite.DependencyInjection\FkThat.MediatorLite.DependencyInjection.csproj", "{F8667AFE-FFA3-4EA8-AC3C-7AEA2502FAC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FkThat.MediatorLite.DependencyInjection", "src\FkThat.MediatorLite.DependencyInjection\FkThat.MediatorLite.DependencyInjection.csproj", "{F8667AFE-FFA3-4EA8-AC3C-7AEA2502FAC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.FkThat.MediatorLite.DependencyInjection", "test\Test.FkThat.MediatorLite.DependencyInjection\Test.FkThat.MediatorLite.DependencyInjection.csproj", "{D32BB6FC-6073-4DBB-BD3F-481B317B0DF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.FkThat.MediatorLite.DependencyInjection", "test\Test.FkThat.MediatorLite.DependencyInjection\Test.FkThat.MediatorLite.DependencyInjection.csproj", "{D32BB6FC-6073-4DBB-BD3F-481B317B0DF7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{F6377516-5225-4BB6-A744-6CE9A4367248}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FkThat.MediatorLite.Demo", "demo\FkThat.MediatorLite.Demo\FkThat.MediatorLite.Demo.csproj", "{B7527438-6010-4B75-A045-A2DEB9C3A650}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Integration", "test\Test.Integration\Test.Integration.csproj", "{7A398806-6DBD-4795-B407-F739479B9894}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FkThat.MediatorLite.Demo", "demo\FkThat.MediatorLite.Demo\FkThat.MediatorLite.Demo.csproj", "{B7527438-6010-4B75-A045-A2DEB9C3A650}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,9 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2B83901A-4809-4271-9402-80EF5CFE2BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -108,18 +103,9 @@ Global
 		{B7527438-6010-4B75-A045-A2DEB9C3A650}.Release|x64.Build.0 = Release|Any CPU
 		{B7527438-6010-4B75-A045-A2DEB9C3A650}.Release|x86.ActiveCfg = Release|Any CPU
 		{B7527438-6010-4B75-A045-A2DEB9C3A650}.Release|x86.Build.0 = Release|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Debug|x64.Build.0 = Debug|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Debug|x86.Build.0 = Debug|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Release|x64.ActiveCfg = Release|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Release|x64.Build.0 = Release|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Release|x86.ActiveCfg = Release|Any CPU
-		{7A398806-6DBD-4795-B407-F739479B9894}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2B83901A-4809-4271-9402-80EF5CFE2BA5} = {49D867CA-27B2-4349-8FE4-A20B7FF28818}
@@ -128,6 +114,8 @@ Global
 		{F8667AFE-FFA3-4EA8-AC3C-7AEA2502FAC4} = {49D867CA-27B2-4349-8FE4-A20B7FF28818}
 		{D32BB6FC-6073-4DBB-BD3F-481B317B0DF7} = {5D580F26-4044-426E-AA8B-F124DF4D71B6}
 		{B7527438-6010-4B75-A045-A2DEB9C3A650} = {F6377516-5225-4BB6-A744-6CE9A4367248}
-		{7A398806-6DBD-4795-B407-F739479B9894} = {5D580F26-4044-426E-AA8B-F124DF4D71B6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E670792-B6FE-467F-AE1A-A695F0A0D4A1}
 	EndGlobalSection
 EndGlobal
