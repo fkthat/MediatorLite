@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
-using FluentAssertions;
 using Xunit;
 
 namespace FkThat.MediatorLite
@@ -12,56 +10,135 @@ namespace FkThat.MediatorLite
         [Fact]
         public async Task SendMessageAsync_ShouldDispatchMessage()
         {
-            var h1 = A.Fake<IMessageHandler<Message1>>();
-            var h2 = A.Fake<IMessageHandler<Message2>>();
-            var configuration = A.Fake<IMediatorConfiguration>();
+            // Fake
 
-            // arrange message handlers
-            A.CallTo(() => configuration.MessageHandlers).Returns(new[] {
-                (typeof(Message1), h1.GetType()),
-                (typeof(Message2), h2.GetType()),
-            });
+            var h1 = A.Fake<IMessageHandler<Message0>>(options =>
+                options.Implements<IMessageHandler<Message1>>()
+                    .Implements<IMessageHandler<Message2>>());
 
-            // arrange message dispatchers
-            A.CallTo(() => configuration.MessageDispatchers).Returns(
-                new Dictionary<Type, Func<object, object, Task>> {
-                    [typeof(Message1)] = (h, m) =>
-                        ((IMessageHandler<Message1>)h).HandleMessageAsync((Message1)m),
-                    [typeof(Message2)] = (h, m) =>
-                        ((IMessageHandler<Message2>)h).HandleMessageAsync((Message2)m),
-                });
+            var h2 = A.Fake<IMessageHandler<Message0>>(options =>
+                options.Implements<IMessageHandler<Message3>>()
+                    .Implements<IMessageHandler<Message4>>());
 
             var serviceProvider = A.Fake<IServiceProvider>();
+
+            // Arrange
+
+            A.CallTo(h1)
+                .Where(c => c.Method.Name == "HandleMessageAsync")
+                .WithReturnType<Task>()
+                .Returns(Task.CompletedTask);
+
+            A.CallTo(h2)
+                .Where(c => c.Method.Name == "HandleMessageAsync")
+                .WithReturnType<Task>()
+                .Returns(Task.CompletedTask);
+
             A.CallTo(() => serviceProvider.GetService(h1.GetType())).Returns(h1);
             A.CallTo(() => serviceProvider.GetService(h2.GetType())).Returns(h2);
 
-            Mediator sut = new(serviceProvider, configuration);
+            // Invoke
+
+            Mediator sut = new(serviceProvider, new[] { h1.GetType(), h2.GetType() });
+
+            Message0 msg0 = new();
             Message1 msg1 = new();
             Message2 msg2 = new();
+            Message1 msg3 = new();
+            Message1 msg4 = new();
+
+            await sut.SendMessageAsync(msg0);
             await sut.SendMessageAsync(msg1);
             await sut.SendMessageAsync(msg2);
+            await sut.SendMessageAsync(msg3);
+            await sut.SendMessageAsync(msg4);
 
-            // verify messages dispatched
-            A.CallTo(() => h1.HandleMessageAsync(msg1)).MustHaveHappened();
-            A.CallTo(() => h2.HandleMessageAsync(msg2)).MustHaveHappened();
+            // Verify
+
+            A.CallTo(h1)
+                .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg0)
+                .MustHaveHappened();
+
+            A.CallTo(h1)
+                .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg1)
+                .MustHaveHappened();
+
+            A.CallTo(h1)
+                .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg2)
+                .MustHaveHappened();
+
+            A.CallTo(h2)
+                .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg0)
+                .MustHaveHappened();
+
+            A.CallTo(h2)
+                .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg3)
+                .MustHaveHappened();
+
+            A.CallTo(h2)
+                .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg4)
+                .MustHaveHappened();
         }
 
         [Fact]
-        public void SendMessageAsync_ShouldIgnoreUnknownMessage()
+        public async Task SendMessageAsync_ShouldIgnoreUnknownMessage()
         {
+            // Fake
+
+            var h1 = A.Fake<IMessageHandler<Message0>>(options =>
+                options.Implements<IMessageHandler<Message1>>()
+                    .Implements<IMessageHandler<Message2>>());
+
+            var h2 = A.Fake<IMessageHandler<Message0>>(options =>
+                options.Implements<IMessageHandler<Message3>>()
+                    .Implements<IMessageHandler<Message4>>());
+
             var serviceProvider = A.Fake<IServiceProvider>();
-            var configuration = A.Fake<IMediatorConfiguration>();
 
-            A.CallTo(() => configuration.MessageDispatchers)
-                .Returns(new Dictionary<Type, Func<object, object, Task>>());
+            // Arrange
 
-            Mediator sut = new(serviceProvider, configuration);
-            var r = sut.SendMessageAsync("hello");
-            r.Should().Be(Task.CompletedTask);
+            A.CallTo(h1)
+                .Where(c => c.Method.Name == "HandleMessageAsync")
+                .WithReturnType<Task>()
+                .Returns(Task.CompletedTask);
+
+            A.CallTo(h2)
+                .Where(c => c.Method.Name == "HandleMessageAsync")
+                .WithReturnType<Task>()
+                .Returns(Task.CompletedTask);
+
+            A.CallTo(() => serviceProvider.GetService(h1.GetType())).Returns(h1);
+            A.CallTo(() => serviceProvider.GetService(h2.GetType())).Returns(h2);
+
+            // Invoke
+
+            Mediator sut = new(serviceProvider, new[] { h1.GetType(), h2.GetType() });
+
+            Message5 msg5 = new();
+
+            await sut.SendMessageAsync(msg5);
+
+            // Verify
+
+            A.CallTo(h1)
+                .Where(c => c.Method.Name == "HandleMessageAsync")
+                .MustNotHaveHappened();
+
+            A.CallTo(h2)
+                .Where(c => c.Method.Name == "HandleMessageAsync")
+                .MustNotHaveHappened();
         }
+
+        public class Message0 { }
 
         public class Message1 { }
 
         public class Message2 { }
+
+        public class Message3 { }
+
+        public class Message4 { }
+
+        public class Message5 { }
     }
 }

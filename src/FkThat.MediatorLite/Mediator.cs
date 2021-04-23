@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,6 +23,17 @@ namespace FkThat.MediatorLite
         {
             _serviceProvider = serviceProvider;
             _configuration = configuration;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mediator"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="handlers">Known handler types.</param>
+        public Mediator(IServiceProvider serviceProvider, IEnumerable<Type> handlers)
+        {
+            _serviceProvider = serviceProvider;
+            _configuration = default!;
         }
 
         /// <summary>
