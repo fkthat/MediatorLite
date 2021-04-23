@@ -1,147 +1,103 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FkThat.MediatorLite;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Test.Integration
+namespace Integration
 {
     public class Test_Integration
     {
         [Fact]
-        public async Task Run()
+        public async Task Mediator_ShouldRouteMessagesToHandlers()
         {
+            IList<(Type, object)> log = new List<(Type, object)>();
+
             ServiceCollection services = new();
-            MessageLog log = new();
+
             services.AddSingleton(log);
-            services.AddTransient<Handler1>();
-            services.AddTransient<Handler2>();
-
             services.AddMediator();
+            services.AddTransient<H1>();
+            services.AddTransient<H2>();
 
-            using var serviceProvider = services.BuildServiceProvider();
-            var mediator = serviceProvider.GetRequiredService<IMediator>();
+            using var container = services.BuildServiceProvider();
+            var mediator = container.GetRequiredService<IMediator>();
 
-            Message0 msg0 = new();
-            Message1 msg1 = new();
-            Message2 msg2 = new();
-            Message3 msg3 = new();
-            Message3 msg4 = new();
+            M0 m0 = new();
+            M1 m1 = new();
+            M2 m2 = new();
+            M3 m3 = new();
+            M4 m4 = new();
 
-            await mediator.SendMessageAsync(msg0);
-            await mediator.SendMessageAsync(msg1);
-            await mediator.SendMessageAsync(msg2);
-            await mediator.SendMessageAsync(msg3);
-            await mediator.SendMessageAsync(msg4);
+            await mediator.SendMessageAsync(m0);
+            await mediator.SendMessageAsync(m1);
+            await mediator.SendMessageAsync(m2);
+            await mediator.SendMessageAsync(m3);
+            await mediator.SendMessageAsync(m4);
 
-            log.Messages.Should().Equal(
-                (typeof(Handler1), msg0),
-                (typeof(Handler2), msg0),
-                (typeof(Handler1), msg1),
-                (typeof(Handler1), msg2),
-                (typeof(Handler2), msg3),
-                (typeof(Handler2), msg4));
+            log.Take(2).Should().Contain((typeof(H1), m0))
+                .And.Contain((typeof(H2), m0));
+
+            log.Skip(2).Should().Equal(
+                (typeof(H1), m1),
+                (typeof(H1), m2),
+                (typeof(H2), m3),
+                (typeof(H2), m4));
         }
 
-        [Fact]
-        public async Task Run_Scoped()
+        public class M0 { }
+
+        public class M1 { }
+
+        public class M2 { }
+
+        public class M3 { }
+
+        public class M4 { }
+
+        public class H1 : IMessageHandler<M0>, IMessageHandler<M1>, IMessageHandler<M2>
         {
-            ServiceCollection services = new();
-            MessageLog log = new();
-            services.AddSingleton(log);
-            services.AddTransient<Handler1>();
-            services.AddTransient<Handler2>();
+            private readonly IList<(Type, object)> _log;
 
-            services.AddMediator();
-
-            using var serviceProvider = services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
-            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-            Message0 msg0 = new();
-            Message1 msg1 = new();
-            Message2 msg2 = new();
-            Message3 msg3 = new();
-            Message3 msg4 = new();
-
-            await mediator.SendMessageAsync(msg0);
-            await mediator.SendMessageAsync(msg1);
-            await mediator.SendMessageAsync(msg2);
-            await mediator.SendMessageAsync(msg3);
-            await mediator.SendMessageAsync(msg4);
-
-            log.Messages.Should().Equal(
-                (typeof(Handler1), msg0),
-                (typeof(Handler2), msg0),
-                (typeof(Handler1), msg1),
-                (typeof(Handler1), msg2),
-                (typeof(Handler2), msg3),
-                (typeof(Handler2), msg4));
-        }
-
-        public class Message0 { }
-
-        public class Message1 { }
-
-        public class Message2 { }
-
-        public class Message3 { }
-
-        public class Message4 { }
-
-        public class MessageLog
-        {
-            public IList<(Type, object)> Messages { get; } = new List<(Type, object)>();
-        }
-
-        public class Handler1 :
-            IMessageHandler<Message0>,
-            IMessageHandler<Message1>,
-            IMessageHandler<Message2>
-        {
-            private readonly MessageLog _log;
-
-            public Handler1(MessageLog log)
+            public H1(IList<(Type, object)> log)
             {
                 _log = log;
             }
 
-            public Task HandleMessageAsync(Message0 message) => OnMessage(message);
+            public Task HandleMessageAsync(M0 message) => LogAsync(message);
 
-            public Task HandleMessageAsync(Message1 message) => OnMessage(message);
+            public Task HandleMessageAsync(M1 message) => LogAsync(message);
 
-            public Task HandleMessageAsync(Message2 message) => OnMessage(message);
+            public Task HandleMessageAsync(M2 message) => LogAsync(message);
 
-            private Task OnMessage(object message)
+            private Task LogAsync(object message)
             {
-                _log.Messages.Add((GetType(), message));
+                _log.Add((GetType(), message));
                 return Task.CompletedTask;
             }
         }
 
-        public class Handler2 :
-            IMessageHandler<Message0>,
-            IMessageHandler<Message3>,
-            IMessageHandler<Message4>
+        public class H2 : IMessageHandler<M0>, IMessageHandler<M3>, IMessageHandler<M4>
         {
-            private readonly MessageLog _log;
+            private readonly IList<(Type, object)> _log;
 
-            public Handler2(MessageLog log)
+            public H2(IList<(Type, object)> log)
             {
                 _log = log;
             }
 
-            public Task HandleMessageAsync(Message0 message) => OnMessage(message);
+            public Task HandleMessageAsync(M0 message) => LogAsync(message);
 
-            public Task HandleMessageAsync(Message3 message) => OnMessage(message);
+            public Task HandleMessageAsync(M3 message) => LogAsync(message);
 
-            public Task HandleMessageAsync(Message4 message) => OnMessage(message);
+            public Task HandleMessageAsync(M4 message) => LogAsync(message);
 
-            private Task OnMessage(object message)
+            private Task LogAsync(object message)
             {
-                _log.Messages.Add((GetType(), message));
+                _log.Add((GetType(), message));
                 return Task.CompletedTask;
             }
         }

@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using FkThat.MediatorLite;
-using FluentAssertions;
 using Xunit;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -11,75 +8,27 @@ namespace Microsoft.Extensions.DependencyInjection
     public class Test_ServiceCollectionExtensions
     {
         [Fact]
-        [Obsolete]
-        public void AddMediator_ShouldRegisterTypes()
+        public async Task AddMediator_ShouldRegisterMediator()
         {
-            ServiceCollection services = new();
-            var configure = A.Fake<Action<IMediatorConfigurationBuilder>>();
-
-            IMediatorConfiguration? config = null;
-            A.CallTo(() => configure(A<IMediatorConfigurationBuilder>._))
-                .Invokes(c => config = (IMediatorConfiguration?)c.Arguments[0]);
-
-            services.AddMediator(config => configure(config));
-
-            services.Should().Contain(d =>
-                d.ServiceType == typeof(IMediatorConfiguration) &&
-                d.ImplementationInstance == config &&
-                d.Lifetime == ServiceLifetime.Singleton);
-
-            services.Should().Contain(d =>
-                d.ServiceType == typeof(IMediator) &&
-                d.ImplementationType == typeof(Mediator) &&
-                d.Lifetime == ServiceLifetime.Transient);
-        }
-
-        [Fact]
-        public async Task AddMediator_ShouldRegisterAutoTypes()
-        {
+            var handler = A.Fake<H>();
+            A.CallTo(() => handler.HandleMessageAsync(A<M>._)).Returns(Task.CompletedTask);
             ServiceCollection services = new();
             services.AddMediator();
-            services.AddTransient<Handler>();
-
-            // validate ServiceCollection contains required descriptors
-
-            services.Should().Contain(d =>
-                d.ServiceType == typeof(IMediatorConfiguration) &&
-                d.Lifetime == ServiceLifetime.Singleton);
-
-            services.Should().Contain(d =>
-                d.ServiceType == typeof(IMediator) &&
-                d.ImplementationType == typeof(Mediator) &&
-                d.Lifetime == ServiceLifetime.Transient);
-
-            // create configuration by ImplementationFactory from ServiceCollection
-
-            var configurationFactory = services
-                .Where(sd => sd.ServiceType == typeof(IMediatorConfiguration))
-                .Select(sd => sd.ImplementationFactory)
-                .First();
-
+            services.AddSingleton(handler);
             using var serviceProvider = services.BuildServiceProvider();
-            var configuration = (IMediatorConfiguration)configurationFactory(serviceProvider);
-
-            // validate configuration contains Handler for Message
-            configuration.MessageHandlers.Should().Contain((typeof(Message), typeof(Handler)));
-
-            // validate configuration contains valid dispatcher
-            var message = new Message();
-            var handler = A.Fake<IMessageHandler<Message>>();
-            A.CallTo(() => handler.HandleMessageAsync(message)).Returns(Task.CompletedTask);
-            await configuration.MessageDispatchers[typeof(Message)](handler, message);
+            var mediator = serviceProvider.GetRequiredService<IMediator>();
+            M message = new();
+            await mediator.SendMessageAsync(message);
             A.CallTo(() => handler.HandleMessageAsync(message)).MustHaveHappened();
         }
 
         // Message and Handler for testing
 
-        public class Message { }
+        public class M { }
 
-        public class Handler : IMessageHandler<Message>
+        public abstract class H : IMessageHandler<M>
         {
-            public Task HandleMessageAsync(Message message) => throw new NotImplementedException();
+            public abstract Task HandleMessageAsync(M message);
         }
     }
 }

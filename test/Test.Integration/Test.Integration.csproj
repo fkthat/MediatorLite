@@ -2,10 +2,22 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <RootNamespace>Integration</RootNamespace>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>CA1062;$(NoWarn)</NoWarn>
+    <CollectCoverage>false</CollectCoverage>
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
+    <Include>[Integration]*</Include>
+    <Exclude>[*]*.Program,[*]*.Startup</Exclude>
+    <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="coverage.cobertura.xml" />
+    <Compile Remove="TestResults\**" />
+    <EmbeddedResource Remove="TestResults\**" />
+    <None Remove="TestResults\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -21,18 +33,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <PropertyGroup>
-    <CollectCoverage>false</CollectCoverage>
-    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
-    <Exclude>[*]*.Program,[*]*.Startup</Exclude>
-    <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="coverage.cobertura.xml" />
+  <ItemGroup Condition="Exists('..\..\src\Integration\Integration.csproj')">
+    <ProjectReference Include="..\..\src\Integration\Integration.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FkThat.MediatorLite.Abstractions\FkThat.MediatorLite.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\FkThat.MediatorLite.DependencyInjection\FkThat.MediatorLite.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\src\FkThat.MediatorLite\FkThat.MediatorLite.csproj" />
   </ItemGroup>
 </Project>
