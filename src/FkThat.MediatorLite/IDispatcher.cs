@@ -1,10 +1,11 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FkThat.MediatorLite
 {
     /// <summary>
-    /// A dispatcher of messages.
+    /// The dispatcher of messages.
     /// </summary>
     public interface IDispatcher
     {
@@ -13,7 +14,8 @@ namespace FkThat.MediatorLite
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="message">The message.</param>
-        /// <returns></returns>
-        Task DispatchAsync(IServiceProvider serviceProvider, object message);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        Task DispatchAsync(
+            IServiceProvider serviceProvider, object message, CancellationToken cancellationToken);
     }
 }

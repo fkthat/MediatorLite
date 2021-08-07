@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Xunit;
@@ -69,12 +70,14 @@ namespace FkThat.MediatorLite
             M2 msg2 = new();
             M3 msg3 = new();
             M4 msg4 = new();
+            using CancellationTokenSource cancellationTokenSource = new();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            await testee.DispatchAsync(serviceProvider, msg0);
-            await testee.DispatchAsync(serviceProvider, msg1);
-            await testee.DispatchAsync(serviceProvider, msg2);
-            await testee.DispatchAsync(serviceProvider, msg3);
-            await testee.DispatchAsync(serviceProvider, msg4);
+            await testee.DispatchAsync(serviceProvider, msg0, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg1, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg2, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg3, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg4, cancellationToken);
 
             // Verify
 
@@ -110,6 +113,9 @@ namespace FkThat.MediatorLite
         [Fact]
         public async Task DispatchAsync_ShouldIgnoreUnknownMessage()
         {
+            using CancellationTokenSource cancellationTokenSource = new();
+            var cancellationToken = cancellationTokenSource.Token;
+
             // Fake
 
             var h1 = A.Fake<IMessageHandler<M0>>(options =>
@@ -176,7 +182,7 @@ namespace FkThat.MediatorLite
 
             M5 msg5 = new();
 
-            await testee.DispatchAsync(serviceProvider, msg5);
+            await testee.DispatchAsync(serviceProvider, msg5, cancellationToken);
 
             // Verify
 

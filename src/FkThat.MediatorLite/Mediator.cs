@@ -29,6 +29,6 @@ namespace FkThat.MediatorLite
         /// <param name="message">The message.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         public Task SendMessageAsync(object message, CancellationToken cancellationToken) =>
-            _dispatcher.DispatchAsync(_serviceProvider, message);
+            _dispatcher.DispatchAsync(_serviceProvider, message, cancellationToken);
     }
 }
