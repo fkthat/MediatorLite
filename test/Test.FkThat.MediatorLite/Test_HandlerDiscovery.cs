@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
@@ -50,20 +51,20 @@ namespace FkThat.MediatorLite
 
         public class H1 : IMessageHandler<M0>, IMessageHandler<M1>, IMessageHandler<M2>
         {
-            public Task HandleMessageAsync(M0 message) => throw new System.NotImplementedException();
+            public Task HandleMessageAsync(M0 message, CancellationToken cancellationToken) => throw new System.NotImplementedException();
 
-            public Task HandleMessageAsync(M1 message) => throw new System.NotImplementedException();
+            public Task HandleMessageAsync(M1 message, CancellationToken cancellationToken) => throw new System.NotImplementedException();
 
-            public Task HandleMessageAsync(M2 message) => throw new System.NotImplementedException();
+            public Task HandleMessageAsync(M2 message, CancellationToken cancellationToken) => throw new System.NotImplementedException();
         }
 
         public class H2 : IMessageHandler<M0>, IMessageHandler<M3>, IMessageHandler<M4>
         {
-            public Task HandleMessageAsync(M0 message) => throw new System.NotImplementedException();
+            public Task HandleMessageAsync(M0 message, CancellationToken cancellationToken) => throw new System.NotImplementedException();
 
-            public Task HandleMessageAsync(M3 message) => throw new System.NotImplementedException();
+            public Task HandleMessageAsync(M3 message, CancellationToken cancellationToken) => throw new System.NotImplementedException();
 
-            public Task HandleMessageAsync(M4 message) => throw new System.NotImplementedException();
+            public Task HandleMessageAsync(M4 message, CancellationToken cancellationToken) => throw new System.NotImplementedException();
         }
     }
 }

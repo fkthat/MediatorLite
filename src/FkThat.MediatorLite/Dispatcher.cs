@@ -13,7 +13,7 @@ namespace FkThat.MediatorLite
     public class Dispatcher : IDispatcher
     {
         private readonly IReadOnlyCollection<(Type MessageType, Type HandlerType)> _handlers;
-        private readonly IReadOnlyDictionary<Type, Func<object, object, Task>> _dispatch;
+        private readonly IReadOnlyDictionary<Type, Func<object, object, CancellationToken, Task>> _dispatch;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Dispatcher"/> class.
@@ -42,6 +42,7 @@ namespace FkThat.MediatorLite
                 .Where(h => h.MessageType == message.GetType())
                 .Select(h => _dispatch[h.MessageType](
                     serviceProvider.GetService(h.HandlerType),
-                    message)));
+                    message,
+                    cancellationToken)));
     }
 }

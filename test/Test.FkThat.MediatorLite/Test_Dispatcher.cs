@@ -47,19 +47,19 @@ namespace FkThat.MediatorLite
                 });
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M0)))
-                .Returns((h, m) => ((IMessageHandler<M0>)h).HandleMessageAsync((M0)m));
+                .Returns((h, m, c) => ((IMessageHandler<M0>)h).HandleMessageAsync((M0)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M2)))
-                .Returns((h, m) => ((IMessageHandler<M2>)h).HandleMessageAsync((M2)m));
+                .Returns((h, m, c) => ((IMessageHandler<M2>)h).HandleMessageAsync((M2)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M3)))
-                .Returns((h, m) => ((IMessageHandler<M3>)h).HandleMessageAsync((M3)m));
+                .Returns((h, m, c) => ((IMessageHandler<M3>)h).HandleMessageAsync((M3)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M4)))
-                .Returns((h, m) => ((IMessageHandler<M4>)h).HandleMessageAsync((M4)m));
+                .Returns((h, m, c) => ((IMessageHandler<M4>)h).HandleMessageAsync((M4)m, c));
 
             // Invoke
 
@@ -81,13 +81,13 @@ namespace FkThat.MediatorLite
 
             // Verify
 
-            A.CallTo(() => h1.HandleMessageAsync(msg0)).MustHaveHappened();
-            A.CallTo(() => h1.HandleMessageAsync(msg1)).MustHaveHappened();
-            A.CallTo(() => h1.HandleMessageAsync(msg2)).MustHaveHappened();
+            A.CallTo(() => h1.HandleMessageAsync(msg0, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h1.HandleMessageAsync(msg1, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h1.HandleMessageAsync(msg2, cancellationToken)).MustHaveHappened();
 
-            A.CallTo(() => h2.HandleMessageAsync(msg0)).MustHaveHappened();
-            A.CallTo(() => h2.HandleMessageAsync(msg3)).MustHaveHappened();
-            A.CallTo(() => h2.HandleMessageAsync(msg4)).MustHaveHappened();
+            A.CallTo(() => h2.HandleMessageAsync(msg0, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h2.HandleMessageAsync(msg3, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h2.HandleMessageAsync(msg4, cancellationToken)).MustHaveHappened();
 
             A.CallTo(h1)
                 .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg1)
@@ -159,22 +159,22 @@ namespace FkThat.MediatorLite
                 });
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             // Invoke
 
@@ -204,20 +204,20 @@ namespace FkThat.MediatorLite
 
         public abstract class H1 : IMessageHandler<M0>, IMessageHandler<M1>, IMessageHandler<M2>
         {
-            public abstract Task HandleMessageAsync(M0 message);
+            public abstract Task HandleMessageAsync(M0 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M1 message);
+            public abstract Task HandleMessageAsync(M1 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M2 message);
+            public abstract Task HandleMessageAsync(M2 message, CancellationToken cancellationToken);
         }
 
         public abstract class H2 : IMessageHandler<M0>, IMessageHandler<M3>, IMessageHandler<M4>
         {
-            public abstract Task HandleMessageAsync(M0 message);
+            public abstract Task HandleMessageAsync(M0 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M3 message);
+            public abstract Task HandleMessageAsync(M3 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M4 message);
+            public abstract Task HandleMessageAsync(M4 message, CancellationToken cancellationToken);
         }
     }
 }

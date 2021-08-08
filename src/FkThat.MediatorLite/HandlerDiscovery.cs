@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FkThat.MediatorLite
 {
     /// <summary>
-    /// Finds registered mesage handlers.
+    /// Finds registered message handlers.
     /// </summary>
     public class HandlerDiscovery : IHandlerDiscovery
     {
-        private readonly IEnumerable<Type> _handlers;
+        private readonly IEnumerable<Type> _types;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerDiscovery"/> class.
         /// </summary>
-        /// <param name="handlers">The known handler types.</param>
-        public HandlerDiscovery(IEnumerable<Type> handlers)
+        /// <param name="types">Types to scan.</param>
+        public HandlerDiscovery(IEnumerable<Type> types)
         {
-            _handlers = handlers;
+            _types = types;
         }
 
         /// <summary>
@@ -26,13 +25,13 @@ namespace FkThat.MediatorLite
         /// </summary>
         /// <returns>The sequence of (MessageType, HandlerType) pairs.</returns>
         public IEnumerable<(Type, Type)> FindMessageHandlers() =>
-            _handlers.Distinct()
-                .SelectMany(ht =>
-                    ht.GetInterfaces()
+            _types.Distinct()
+                .SelectMany(t =>
+                    t.GetInterfaces()
                         .Where(it =>
                             it.IsGenericType &&
                             it.GetGenericTypeDefinition() == typeof(IMessageHandler<>))
                         .Select(it => it.GetGenericArguments().First())
-                        .Select(mt => (mt, ht)));
+                        .Select(mt => (mt, t)));
     }
 }
