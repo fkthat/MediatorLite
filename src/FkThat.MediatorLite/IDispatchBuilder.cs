@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FkThat.MediatorLite
@@ -12,6 +13,6 @@ namespace FkThat.MediatorLite
         /// Builds the dispatch function.
         /// </summary>
         /// <param name="messageType">Type of the message.</param>
-        Func<object, object, Task> BuildDispatchFunc(Type messageType);
+        Func<object, object, CancellationToken, Task> BuildDispatchFunc(Type messageType);
     }
 }

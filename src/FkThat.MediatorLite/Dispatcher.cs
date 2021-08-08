@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FkThat.MediatorLite
@@ -12,7 +13,7 @@ namespace FkThat.MediatorLite
     public class Dispatcher : IDispatcher
     {
         private readonly IReadOnlyCollection<(Type MessageType, Type HandlerType)> _handlers;
-        private readonly IReadOnlyDictionary<Type, Func<object, object, Task>> _dispatch;
+        private readonly IReadOnlyDictionary<Type, Func<object, object, CancellationToken, Task>> _dispatch;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Dispatcher"/> class.
@@ -32,12 +33,16 @@ namespace FkThat.MediatorLite
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="message">The message.</param>
-        /// <returns></returns>
-        public Task DispatchAsync(IServiceProvider serviceProvider, object message) =>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public Task DispatchAsync(
+            IServiceProvider serviceProvider,
+            object message,
+            CancellationToken cancellationToken) =>
             Task.WhenAll(_handlers
                 .Where(h => h.MessageType == message.GetType())
                 .Select(h => _dispatch[h.MessageType](
                     serviceProvider.GetService(h.HandlerType),
-                    message)));
+                    message,
+                    cancellationToken)));
     }
 }

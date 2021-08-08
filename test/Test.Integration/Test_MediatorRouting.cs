@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using FkThat.MediatorLite;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Integration
+namespace FkThat.MediatorLite
 {
-    public class Test_Integration
+    public class Test_MediatorRouting
     {
         [Fact]
         public async Task Mediator_ShouldRouteMessagesToHandlers()
@@ -67,11 +67,11 @@ namespace Integration
                 _log = log;
             }
 
-            public Task HandleMessageAsync(M0 message) => LogAsync(message);
+            public Task HandleMessageAsync(M0 message, CancellationToken cancellationToken) => LogAsync(message);
 
-            public Task HandleMessageAsync(M1 message) => LogAsync(message);
+            public Task HandleMessageAsync(M1 message, CancellationToken cancellationToken) => LogAsync(message);
 
-            public Task HandleMessageAsync(M2 message) => LogAsync(message);
+            public Task HandleMessageAsync(M2 message, CancellationToken cancellationToken) => LogAsync(message);
 
             private Task LogAsync(object message)
             {
@@ -89,11 +89,11 @@ namespace Integration
                 _log = log;
             }
 
-            public Task HandleMessageAsync(M0 message) => LogAsync(message);
+            public Task HandleMessageAsync(M0 message, CancellationToken cancellationToken) => LogAsync(message);
 
-            public Task HandleMessageAsync(M3 message) => LogAsync(message);
+            public Task HandleMessageAsync(M3 message, CancellationToken cancellationToken) => LogAsync(message);
 
-            public Task HandleMessageAsync(M4 message) => LogAsync(message);
+            public Task HandleMessageAsync(M4 message, CancellationToken cancellationToken) => LogAsync(message);
 
             private Task LogAsync(object message)
             {

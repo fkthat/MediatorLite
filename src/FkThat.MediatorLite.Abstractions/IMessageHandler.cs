@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FkThat.MediatorLite
@@ -12,6 +13,7 @@ namespace FkThat.MediatorLite
         /// Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        Task HandleMessageAsync(T message);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        Task HandleMessageAsync(T message, CancellationToken cancellationToken);
     }
 }
