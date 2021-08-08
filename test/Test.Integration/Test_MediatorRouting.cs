@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Integration
 {
-    public class Test_Integration
+    public class Test_MediatorRouting
     {
         [Fact]
         public async Task Mediator_ShouldRouteMessagesToHandlers()
