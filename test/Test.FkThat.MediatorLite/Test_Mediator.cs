@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Xunit;
@@ -10,17 +11,21 @@ namespace FkThat.MediatorLite
         [Fact]
         public async Task SendMessageAsync_ShouldCallDispatcher()
         {
+            Message message = new();
+            CancellationTokenSource cancellationTokenSource = new();
+            var cancellationToken = cancellationTokenSource.Token;
             var serviceProvider = A.Fake<IServiceProvider>();
             var dispatcher = A.Fake<IDispatcher>();
 
-            A.CallTo(() => dispatcher.DispatchAsync(A<IServiceProvider>._, A<object>._))
+            A.CallTo(() => dispatcher.DispatchAsync(
+                serviceProvider, message, cancellationToken))
                 .Returns(Task.CompletedTask);
 
             Mediator testee = new(serviceProvider, dispatcher);
-            Message message = new();
-            await testee.SendMessageAsync(message);
+            await testee.SendMessageAsync(message, cancellationToken);
 
-            A.CallTo(() => dispatcher.DispatchAsync(serviceProvider, message)).MustHaveHappened();
+            A.CallTo(() => dispatcher.DispatchAsync(serviceProvider, message, cancellationToken))
+                .MustHaveHappened();
         }
 
         public class Message { }

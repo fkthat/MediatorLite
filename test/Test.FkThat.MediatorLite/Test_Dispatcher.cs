@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Xunit;
@@ -46,19 +47,19 @@ namespace FkThat.MediatorLite
                 });
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M0)))
-                .Returns((h, m) => ((IMessageHandler<M0>)h).HandleMessageAsync((M0)m));
+                .Returns((h, m, c) => ((IMessageHandler<M0>)h).HandleMessageAsync((M0)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M2)))
-                .Returns((h, m) => ((IMessageHandler<M2>)h).HandleMessageAsync((M2)m));
+                .Returns((h, m, c) => ((IMessageHandler<M2>)h).HandleMessageAsync((M2)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M3)))
-                .Returns((h, m) => ((IMessageHandler<M3>)h).HandleMessageAsync((M3)m));
+                .Returns((h, m, c) => ((IMessageHandler<M3>)h).HandleMessageAsync((M3)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M4)))
-                .Returns((h, m) => ((IMessageHandler<M4>)h).HandleMessageAsync((M4)m));
+                .Returns((h, m, c) => ((IMessageHandler<M4>)h).HandleMessageAsync((M4)m, c));
 
             // Invoke
 
@@ -69,22 +70,24 @@ namespace FkThat.MediatorLite
             M2 msg2 = new();
             M3 msg3 = new();
             M4 msg4 = new();
+            using CancellationTokenSource cancellationTokenSource = new();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            await testee.DispatchAsync(serviceProvider, msg0);
-            await testee.DispatchAsync(serviceProvider, msg1);
-            await testee.DispatchAsync(serviceProvider, msg2);
-            await testee.DispatchAsync(serviceProvider, msg3);
-            await testee.DispatchAsync(serviceProvider, msg4);
+            await testee.DispatchAsync(serviceProvider, msg0, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg1, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg2, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg3, cancellationToken);
+            await testee.DispatchAsync(serviceProvider, msg4, cancellationToken);
 
             // Verify
 
-            A.CallTo(() => h1.HandleMessageAsync(msg0)).MustHaveHappened();
-            A.CallTo(() => h1.HandleMessageAsync(msg1)).MustHaveHappened();
-            A.CallTo(() => h1.HandleMessageAsync(msg2)).MustHaveHappened();
+            A.CallTo(() => h1.HandleMessageAsync(msg0, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h1.HandleMessageAsync(msg1, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h1.HandleMessageAsync(msg2, cancellationToken)).MustHaveHappened();
 
-            A.CallTo(() => h2.HandleMessageAsync(msg0)).MustHaveHappened();
-            A.CallTo(() => h2.HandleMessageAsync(msg3)).MustHaveHappened();
-            A.CallTo(() => h2.HandleMessageAsync(msg4)).MustHaveHappened();
+            A.CallTo(() => h2.HandleMessageAsync(msg0, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h2.HandleMessageAsync(msg3, cancellationToken)).MustHaveHappened();
+            A.CallTo(() => h2.HandleMessageAsync(msg4, cancellationToken)).MustHaveHappened();
 
             A.CallTo(h1)
                 .Where(c => c.Method.Name == "HandleMessageAsync" && c.Arguments[0] == msg1)
@@ -110,6 +113,9 @@ namespace FkThat.MediatorLite
         [Fact]
         public async Task DispatchAsync_ShouldIgnoreUnknownMessage()
         {
+            using CancellationTokenSource cancellationTokenSource = new();
+            var cancellationToken = cancellationTokenSource.Token;
+
             // Fake
 
             var h1 = A.Fake<IMessageHandler<M0>>(options =>
@@ -153,22 +159,22 @@ namespace FkThat.MediatorLite
                 });
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             A.CallTo(() => dispatchBuilder.BuildDispatchFunc(typeof(M1)))
-                .Returns((h, m) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m));
+                .Returns((h, m, c) => ((IMessageHandler<M1>)h).HandleMessageAsync((M1)m, c));
 
             // Invoke
 
@@ -176,7 +182,7 @@ namespace FkThat.MediatorLite
 
             M5 msg5 = new();
 
-            await testee.DispatchAsync(serviceProvider, msg5);
+            await testee.DispatchAsync(serviceProvider, msg5, cancellationToken);
 
             // Verify
 
@@ -198,20 +204,20 @@ namespace FkThat.MediatorLite
 
         public abstract class H1 : IMessageHandler<M0>, IMessageHandler<M1>, IMessageHandler<M2>
         {
-            public abstract Task HandleMessageAsync(M0 message);
+            public abstract Task HandleMessageAsync(M0 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M1 message);
+            public abstract Task HandleMessageAsync(M1 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M2 message);
+            public abstract Task HandleMessageAsync(M2 message, CancellationToken cancellationToken);
         }
 
         public abstract class H2 : IMessageHandler<M0>, IMessageHandler<M3>, IMessageHandler<M4>
         {
-            public abstract Task HandleMessageAsync(M0 message);
+            public abstract Task HandleMessageAsync(M0 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M3 message);
+            public abstract Task HandleMessageAsync(M3 message, CancellationToken cancellationToken);
 
-            public abstract Task HandleMessageAsync(M4 message);
+            public abstract Task HandleMessageAsync(M4 message, CancellationToken cancellationToken);
         }
     }
 }

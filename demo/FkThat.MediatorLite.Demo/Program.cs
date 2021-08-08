@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,29 +29,29 @@ namespace FkThat.MediatorLite.Demo
             _mediator = mediator;
         }
 
-        public async Task HandleMessageAsync(CreateOrder message)
+        public async Task HandleMessageAsync(CreateOrder message, CancellationToken cancellationToken)
         {
             _store.AddOrder(new Order(message.Id, OrderState.New));
-            await _mediator.SendMessageAsync(new Notify("Order created."));
+            await _mediator.SendMessageAsync(new Notify("Order created."), cancellationToken);
         }
 
-        public async Task HandleMessageAsync(CompleteOrder message)
+        public async Task HandleMessageAsync(CompleteOrder message, CancellationToken cancellationToken)
         {
             _store.UpdateOrder(new Order(message.Id, OrderState.Completed));
-            await _mediator.SendMessageAsync(new Notify("Order completed."));
+            await _mediator.SendMessageAsync(new Notify("Order completed."), cancellationToken);
         }
 
-        public async Task HandleMessageAsync(CancelOrder message)
+        public async Task HandleMessageAsync(CancelOrder message, CancellationToken cancellationToken)
         {
             _store.UpdateOrder(new Order(message.Id, OrderState.Canceled));
-            await _mediator.SendMessageAsync(new Notify("Order canceled."));
+            await _mediator.SendMessageAsync(new Notify("Order canceled."), cancellationToken);
         }
     }
 
     // Define notification message handler
     public class NotificationHandler : IMessageHandler<Notify>
     {
-        public Task HandleMessageAsync(Notify message)
+        public Task HandleMessageAsync(Notify message, CancellationToken cancellationToken)
         {
             Console.WriteLine(message.Message);
             return Task.CompletedTask;
