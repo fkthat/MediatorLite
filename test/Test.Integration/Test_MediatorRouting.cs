@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FkThat.MediatorLite;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Integration
+namespace FkThat.MediatorLite
 {
     public class Test_MediatorRouting
     {
