@@ -38,19 +38,19 @@ public class OrderHandler :
         _mediator = mediator;
     }
 
-    public async Task HandleMessageAsync(CreateOrder message)
+    public async Task HandleMessageAsync(CreateOrder message, CancellationToken _)
     {
         _store.AddOrder(new Order(message.Id, OrderState.New));
         await _mediator.SendMessageAsync(new Notify("Order created."));
     }
 
-    public async Task HandleMessageAsync(CompleteOrder message)
+    public async Task HandleMessageAsync(CompleteOrder message, CancellationToken _)
     {
         _store.UpdateOrder(new Order(message.Id, OrderState.Completed));
         await _mediator.SendMessageAsync(new Notify("Order completed."));
     }
 
-    public async Task HandleMessageAsync(CancelOrder message)
+    public async Task HandleMessageAsync(CancelOrder message, CancellationToken _)
     {
         _store.UpdateOrder(new Order(message.Id, OrderState.Canceled));
         await _mediator.SendMessageAsync(new Notify("Order canceled."));
@@ -59,7 +59,7 @@ public class OrderHandler :
 
 public class NotificationHandler : IMessageHandler<Notify>
 {
-    public Task HandleMessageAsync(Notify message)
+    public Task HandleMessageAsync(Notify message, CancellationToken _)
     {
         Console.WriteLine(message.Message);
         return Task.CompletedTask;
